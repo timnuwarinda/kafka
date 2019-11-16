@@ -37,17 +37,10 @@ const jsonData = require('./app_json.js');
 
 
 app.get('/',(req, res)=>{
-  (async () => {
 
-      try {
+  pushDataToKafka(jsonData);
 
-        pushDataToKafka(jsonData);
-
-      } catch (err) {
-          console.error(err);
-      }
-  })();
-
+     
 });
 
 app.listen(port);
