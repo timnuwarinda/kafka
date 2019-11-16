@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafkademo-deployment
+  labels:
+    app: kafkademo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafkademo
+  template:
+    metadata:
+      labels:
+        app: kafkademo
+
+    spec:
+      containers:
+        - name: kafkademo
+          image: timnuwa/kafkademo:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KEY1
+              valueFrom:
+                configMapKeyRef:
+                  name: kafkademo-config
+                  key: someKey1
+            - name: NEXT_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: kafkademo-config
+                  key: nextService
+            - name: SERVICE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kafkademo-secrets
+                  key: service-api-key
+            - name: USER_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: kafkademo-config
+                  key: userService
+            - name: USER_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: kafkademo-config
+                  key: userServicePort
