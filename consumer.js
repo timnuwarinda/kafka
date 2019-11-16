@@ -1,6 +1,8 @@
 const kafka = require('kafka-node');
 const config = require('./config');
 
+console.log(`consumer listening`);
+
 try {
  const Consumer = kafka.Consumer;
  const client = new kafka.KafkaClient({idleConnection: 24 * 60 * 60 * 1000,  kafkaHost: config.KafkaHost});
