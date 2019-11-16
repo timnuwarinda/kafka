@@ -14,4 +14,4 @@ COPY . .
 EXPOSE 8080
 
 
-CMD [ "node", "consumer.js" ]
+CMD [ "node", "producer.js" ]

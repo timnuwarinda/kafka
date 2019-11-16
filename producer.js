@@ -1,38 +1,34 @@
-const { Kafka } = require('kafkajs')
+const Kafka = require('kafka-node');
+const config  = require('./config');
 
-const kafka = new Kafka({
-  clientId: 'my-app',
-  brokers: ['stream-kafka:9092']
-})
+const Producer = Kafka.Producer;
+const client = new Kafka.KafkaClient({kafkaHost: config.KafkaHost});
+const producer = new Producer(client,  {requireAcks: 0, partitionerType: 2});
 
-const fs = require('fs')
-const ip = require('ip')
 
-const producer = kafka.producer()
 
-const run = async () => {
-  // Producing
-  await producer.connect()
-  await producer.send({
-    topic: 'test-topic',
-    messages: [
-      { value: 'Hello KafkaJS user!' },
-    ],
+const pushDataToKafka =(dataToPush) => {
+
+  try {
+  let payloadToKafkaTopic = [{topic: config.KafkaTopic, messages: JSON.stringify(dataToPush) }];
+  console.log(payloadToKafkaTopic);
+  producer.on('ready', async function() {
+    producer.send(payloadToKafkaTopic, (err, data) => {
+          console.log('data: ', data);
+  });
+
+  producer.on('error', function(err) {
+    //  handle error cases here
   })
- 
-  // Consuming
-  await consumer.connect()
-  await consumer.subscribe({ topic: 'test-topic', fromBeginning: true })
- 
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      console.log({
-        partition,
-        offset: message.offset,
-        value: message.value.toString(),
-      })
-    },
   })
+  }
+catch(error) {
+  console.log(error);
 }
- 
-run().catch(console.error)
+
+};
+
+
+const jsonData = require('./app_json.js');
+
+pushDataToKafka(jsonData);
