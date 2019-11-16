@@ -1,10 +1,3 @@
-
-const express = require('express');
-const app = express();
-
-const port = 8080;
-
-
 const Kafka = require('kafka-node');
 const config  = require('./config');
 
@@ -38,12 +31,4 @@ catch(error) {
 
 const jsonData = require('./app_json.js');
 
-
-
-app.get('/',(req, res)=>{
-  pushDataToKafka(jsonData);
-
-});
-
-app.listen(port);
-
+pushDataToKafka(jsonData);
