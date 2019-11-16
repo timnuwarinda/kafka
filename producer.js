@@ -1,10 +1,13 @@
+
+const express = require('express');
+const app = express();
 const Kafka = require('kafka-node');
 const config  = require('./config');
 
+const port = 8080;
 const Producer = Kafka.Producer;
 const client = new Kafka.KafkaClient({kafkaHost: config.KafkaHost});
 const producer = new Producer(client,  {requireAcks: 0, partitionerType: 2});
-
 
 
 const pushDataToKafka =(dataToPush) => {
@@ -31,4 +34,20 @@ catch(error) {
 
 const jsonData = require('./app_json.js');
 
-pushDataToKafka(jsonData);
+
+
+app.get('/',(req, res)=>{
+  (async () => {
+
+      try {
+
+        pushDataToKafka(jsonData);
+
+      } catch (err) {
+          console.error(err);
+      }
+  })();
+
+});
+
+app.listen(port);
