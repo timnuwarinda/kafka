@@ -22,6 +22,8 @@ const pushDataToKafka =(dataToPush) => {
   });
 
   producer.on('error', function(err) {
+    console.log(err);
+
     //  handle error cases here
   })
   })
